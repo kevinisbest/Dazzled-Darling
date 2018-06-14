@@ -6,6 +6,8 @@ import os
 import sys
 
 image_path = '/Users/kevin_mbp/Desktop/image/'
+output_path = '/Users/kevin_mbp/Desktop/test_dir/output'
+seed_path = '/Users/kevin_mbp/Desktop/test_dir/seed_pic/'
 
 # 計算相似矩陣
 def cosine_similarity(ratings):
@@ -19,11 +21,26 @@ def main():
     # 自 images 目錄找出所有 JPEG 檔案    
     y_test=[]
     x_test=[]
+    seed_pic=[]
+    for class_name in sorted(os.listdir(seed_path)):
+        print('now is ',class_name)
+        for img_path in sorted(os.listdir(seed_path+class_name)):
+            if img_path.endswith('.jpg'):
+                img = image.load_img(seed_path+class_name+'/'+img_path, target_size=(224, 224))
+                x = image.img_to_array(img)
+                x = np.expand_dims(x, axis=0)
+                if len(seed_pic)>0:
+                    seed_pic = np.concatenate((seed_pic,x))
+                else:
+                    seed_pic = x
+
+    seed_pic = preprocess_input(seed_pic)
+
     for img_path in sorted(os.listdir(image_path)):
-        print(img_path)
+        # print(img_path)
         if img_path.endswith(".jpg"):
             img = image.load_img(image_path+img_path, target_size=(224, 224))
-            y_test.append(img_path[0:4])
+            y_test.append(img_path)
             x = image.img_to_array(img)
             x = np.expand_dims(x, axis=0)
             if len(x_test) > 0:
@@ -39,15 +56,21 @@ def main():
 
 
     # 萃取特徵
-    features = model.predict(x_test)
+    features_seed = model.predict(seed_pic)
+    features_test = model.predict(x_test)
+    print(features_test.shape)
+    print(features_seed.shape)
+    features_total = np.concatenate((features_test,features_seed))
+    print(features_total.shape)
     # 計算相似矩陣
-    features_compress = features.reshape(len(y_test),7*7*512)
+    features_compress = features_test.reshape(len(seed_pic),7*7*512)
     sim = cosine_similarity(features_compress)
     print(sim)
     # 依命令行參數，取1個樣本測試測試
     inputNo = 1 # tiger, np.random.randint(0,len(y_test),1)[0]
-    top = np.argsort(-sim, axis=1)[:,0:6]
+    top = np.argsort(-sim, axis=1)[:,0:5]
     print(top)
+    print(len(x_test),len(y_test))
     # 取得最相似的前3名序號
     # recommend = [y_test[i] for i in top]
     # print(recommend)
