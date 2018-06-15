@@ -8,7 +8,7 @@ from scipy.spatial.distance import cosine
 import scipy
 from tqdm import tqdm
 
-image_path = '/Users/kevin_mbp/Desktop/image/'
+image_path = '/Users/kevin_mbp/Desktop/image/user_images'
 output_path = '/Users/kevin_mbp/Desktop/test_dir/output'
 seed_path = '/Users/kevin_mbp/Desktop/test_dir/seed_pic/'
 
@@ -38,9 +38,8 @@ def consine_distance(seed_vector,test_vector):
     #         distance[i,j] = cosine(u[i,:],v[j,:])
     return distance
 def main():
-    # 自 images 目錄找出所有 JPEG 檔案    
-    y_test=[]
-    x_test=[]
+    # 讀取 seed pics
+
     seed_pic=[]
     class_dict={}
     i=0
@@ -57,63 +56,57 @@ def main():
                     seed_pic = np.concatenate((seed_pic,x))
                 else:
                     seed_pic = x
-
     seed_pic = preprocess_input(seed_pic)
-
-    for img_path in sorted(os.listdir(image_path)):
-        # print(img_path)
-        if img_path.endswith(".jpg"):
-            img = image.load_img(image_path+img_path, target_size=(224, 224))
-            y_test.append(img_path)
-            x = image.img_to_array(img)
-            x = np.expand_dims(x, axis=0)
-            if len(x_test) > 0:
-                x_test = np.concatenate((x_test,x))
-            else:
-                x_test=x
-    
-    # 轉成 VGG 的 input 格式
-    x_test = preprocess_input(x_test)
 
     # include_top=False，表示會載入 VGG19 的模型，不包括加在最後3層的卷積層，通常是取得 Features (1,7,7,512)
     model = VGG19(weights='imagenet', include_top=False) 
 
-
     # 萃取特徵
     features_seed = model.predict(seed_pic)
-    features_test = model.predict(x_test)
-    # print(features_test.shape)
-    # print(features_seed.shape)
-    # features_total = np.concatenate((features_test,features_seed))
-    # print(features_total.shape)
-    # 計算相似矩陣
-    
     features_compress_seed = features_seed.reshape(len(seed_pic),7*7*512)
-    features_compress_test = features_test.reshape(len(y_test),7*7*512)
-    # print(y_test)
-    # sim = cosine_similarity(features_compress)
-    for i in tqdm(range(len(y_test))):
-        distance = consine_distance(features_compress_seed,features_compress_test[i,:])
-        sorted_distance = np.sort(distance)
-        if sorted_distance[0]>0.88 :
-            print(y_test[i] + " is in other class." )
-        else:
-            top1,top2,top3 = np.argsort(distance)[0:3]
-            print(y_test[i] + ' pass the threshold: ')
-            print("Top 3 class are: "+ class_dict[top1]+', '+class_dict[top2]+', '+class_dict[top3])
 
-    # print(sim)
-    # print(distance)
-    # 依命令行參數，取1個樣本測試測試
-    # inputNo = 1 # tiger, np.random.randint(0,len(y_test),1)[0]
-    # top = np.argsort(-sim, axis=1)[:,0:5]
-    # print(top)
-    # top = np.argsort(distance, axis=1)[:,0:5]
-    # print(top)
-    # print(len(x_test),len(y_test))
-    # 取得最相似的前3名序號
-    # recommend = [y_test[i] for i in top]
-    # print(recommend)
+    # 自user目錄找出所有 JPEG 檔案    
+    for user_name in sorted(os.listdir(image_path)):
+        y_test=[]
+        x_test=[]
+        print('now is ',user_name)
+        for image_path in sorted(os.listdir(image_path+user_name)):
+            # print(img_path)
+            if img_path.endswith(".jpg"):
+                img = image.load_img(image_path+img_path, target_size=(224, 224))
+                y_test.append(img_path)
+                x = image.img_to_array(img)
+                x = np.expand_dims(x, axis=0)
+                if len(x_test) > 0:
+                    x_test = np.concatenate((x_test,x))
+                else:
+                    x_test=x
+        
+        # 轉成 VGG 的 input 格式
+        x_test = preprocess_input(x_test)
+        # 萃取特徵
+        features_test = model.predict(x_test)
+        features_compress_test = features_test.reshape(len(y_test),7*7*512)
+
+        # 準備計算各類次數
+        user_image_class_count = {}
+        for i in range(len(class_dict)):
+            user_image_class_count[class_dict[i]] = 0
+        user_image_class_count['other'] = 0
+
+        # 計算 test image 與 seed pic 的距離
+        for i in range(len(y_test)):
+            distance = consine_distance(features_compress_seed,features_compress_test[i,:])
+            sorted_distance = np.sort(distance)
+            if sorted_distance[0]>0.88 :
+                user_image_class_count['other'] += 1
+            else:
+                top1,top2,top3 = np.argsort(distance)[0:3]
+                user_image_class_count[class_dict[top1]] += 3 
+                user_image_class_count[class_dict[top2]] += 2
+                user_image_class_count[class_dict[top3]] += 1
+        print('this user images class distribution: ',user_image_class_count)
+
 
 if __name__ == "__main__":
     main()
