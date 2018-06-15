@@ -6,10 +6,11 @@ import os
 import sys
 from scipy.spatial.distance import cosine
 import scipy
+from tqdm import tqdm
 
-image_path = '/Users/kevin_mbp/Desktop/image/'
-output_path = '/Users/kevin_mbp/Desktop/test_dir/output'
-seed_path = '/Users/kevin_mbp/Desktop/test_dir/seed_pic/'
+image_path = './image/'
+output_path = './output'
+seed_path = './seed_pic/'
 
 # 計算相似矩陣
 def cosine_similarity(ratings):
@@ -22,8 +23,7 @@ def consine_distance(seed_vector,test_vector):
     dis = np.zeros(80)
     for i in range(8):
         index_max = (i+1)*10-1
-        for j in range(index_max-9,index_max+1,1):
-            print(j)
+        for j in tqdm(range(index_max-9,index_max+1,1)):
             tmp = cosine(seed_vector[j,:],test_vector)
             dis[j] = tmp
     dis = dis.reshape(8,10)
@@ -38,6 +38,8 @@ def main():
     x_test=[]
     seed_pic=[]
     for class_name in sorted(os.listdir(seed_path)):
+        if class_name == '.DS_Store':
+            continue
         print('now is :',class_name)
         for img_path in sorted(os.listdir(seed_path+class_name)):
             if img_path.endswith('.jpg'):
