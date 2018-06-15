@@ -8,9 +8,13 @@ from scipy.spatial.distance import cosine
 import scipy
 from tqdm import tqdm
 
-image_path = './image/'
-output_path = './output'
-seed_path = './seed_pic/'
+image_path = '/Users/kevin_mbp/Desktop/image/'
+output_path = '/Users/kevin_mbp/Desktop/test_dir/output'
+seed_path = '/Users/kevin_mbp/Desktop/test_dir/seed_pic/'
+
+# image_path = './image/'
+# output_path = './output'
+# seed_path = './seed_pic/'
 
 # 計算相似矩陣
 def cosine_similarity(ratings):
@@ -23,7 +27,8 @@ def consine_distance(seed_vector,test_vector):
     dis = np.zeros(80)
     for i in range(8):
         index_max = (i+1)*10-1
-        for j in tqdm(range(index_max-9,index_max+1,1)):
+        for j in range(index_max-9,index_max+1,1):
+            # print(j)
             tmp = cosine(seed_vector[j,:],test_vector)
             dis[j] = tmp
     dis = dis.reshape(8,10)
@@ -37,10 +42,12 @@ def main():
     y_test=[]
     x_test=[]
     seed_pic=[]
+    class_dict={}
+    i=0
     for class_name in sorted(os.listdir(seed_path)):
-        if class_name == '.DS_Store':
-            continue
         print('now is :',class_name)
+        class_dict[i]=class_name
+        i+=1
         for img_path in sorted(os.listdir(seed_path+class_name)):
             if img_path.endswith('.jpg'):
                 img = image.load_img(seed_path+class_name+'/'+img_path, target_size=(224, 224))
@@ -83,11 +90,18 @@ def main():
     
     features_compress_seed = features_seed.reshape(len(seed_pic),7*7*512)
     features_compress_test = features_test.reshape(len(y_test),7*7*512)
-
+    # print(y_test)
     # sim = cosine_similarity(features_compress)
-    for i in range(len(y_test)):
+    for i in tqdm(range(len(y_test))):
         distance = consine_distance(features_compress_seed,features_compress_test[i,:])
-        print(distance)
+        sorted_distance = np.sort(distance)
+        if sorted_distance[0]>0.88 :
+            print(y_test[i] + " is in other class." )
+        else:
+            top1,top2,top3 = np.argsort(distance)[0:3]
+            print(y_test[i] + ' pass the threshold: ')
+            print("Top 3 class are: "+ class_dict[top1]+', '+class_dict[top2]+', '+class_dict[top3])
+
     # print(sim)
     # print(distance)
     # 依命令行參數，取1個樣本測試測試
