@@ -8,7 +8,7 @@ from scipy.spatial.distance import cosine
 import scipy
 from tqdm import tqdm
 
-image_path = '/Users/kevin_mbp/Desktop/image/user_images'
+image_path = '/Users/kevin_mbp/Desktop/image/user_images/'
 output_path = '/Users/kevin_mbp/Desktop/test_dir/output'
 seed_path = '/Users/kevin_mbp/Desktop/test_dir/seed_pic/'
 
@@ -70,10 +70,10 @@ def main():
         y_test=[]
         x_test=[]
         print('now is ',user_name)
-        for image_path in sorted(os.listdir(image_path+user_name)):
+        for img_path in sorted(os.listdir(image_path+user_name)):
             # print(img_path)
             if img_path.endswith(".jpg"):
-                img = image.load_img(image_path+img_path, target_size=(224, 224))
+                img = image.load_img(image_path+'/'+user_name+'/'+img_path, target_size=(224, 224))
                 y_test.append(img_path)
                 x = image.img_to_array(img)
                 x = np.expand_dims(x, axis=0)
