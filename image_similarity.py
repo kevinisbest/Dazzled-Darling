@@ -79,7 +79,8 @@ def main():
         for img_path in sorted(os.listdir(image_path+user_name)):
             # print(img_path)
             if img_path.endswith(".jpg"):
-                img = image.load_img(image_path+'/'+user_name+'/'+img_path, target_size=(224, 224))
+                img = image.load_img(os.path.join(image_path, user_name,img_path),target_size=(224, 224))
+                # img = image.load_img(image_path+'/'+user_name+'/'+img_path, target_size=(224, 224))
                 y_test.append(img_path)
                 x = image.img_to_array(img)
                 x = np.expand_dims(x, axis=0)
