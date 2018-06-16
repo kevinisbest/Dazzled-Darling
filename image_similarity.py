@@ -6,11 +6,17 @@ import os
 import sys
 from scipy.spatial.distance import cosine
 import scipy
+from PIL import ImageFile
+ImageFile.LOAD_TRUNCATED_IMAGES = True
 from tqdm import tqdm
 
-image_path = '/Users/kevin_mbp/Desktop/image/user_images/'
-output_path = '/Users/kevin_mbp/Desktop/test_dir/output'
-seed_path = '/Users/kevin_mbp/Desktop/test_dir/seed_pic/'
+# image_path = '/Users/kevin_mbp/Desktop/image/user_images/'
+# output_path = '/Users/kevin_mbp/Desktop/test_dir/output/'
+# seed_path = '/Users/kevin_mbp/Desktop/test_dir/seed_pic/'
+
+image_path = '/media/Data/IR2018/IG_pic/'
+seed_path = '/home/mirlab/IR2018/seed_pic/'
+output_path = '/home/mirlab/IR2018/image_user_output/'
 
 # image_path = './image/'
 # output_path = './output'
@@ -106,6 +112,12 @@ def main():
                 user_image_class_count[class_dict[top2]] += 2
                 user_image_class_count[class_dict[top3]] += 1
         print('this user images class distribution: ',user_image_class_count)
+
+        f = open(output_path+'output.txt','a')
+        f.write(user_name+' :\n')
+        f.write(str(user_image_class_count))
+        f.write('\n')
+        f.close()
 
 
 if __name__ == "__main__":
