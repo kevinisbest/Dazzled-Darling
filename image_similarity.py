@@ -79,15 +79,20 @@ def main():
         for img_path in sorted(os.listdir(image_path+user_name)):
             # print(img_path)
             if img_path.endswith(".jpg"):
-                img = image.load_img(os.path.join(image_path, user_name,img_path),target_size=(224, 224))
-                # img = image.load_img(image_path+'/'+user_name+'/'+img_path, target_size=(224, 224))
-                y_test.append(img_path)
-                x = image.img_to_array(img)
-                x = np.expand_dims(x, axis=0)
-                if len(x_test) > 0:
-                    x_test = np.concatenate((x_test,x))
+                try:
+                    img = image.load_img(os.path.join(image_path, user_name,img_path),target_size=(224, 224))
+                except:
+                    print('Bad pic: ',os.path.join(image_path, user_name,img_path))
                 else:
-                    x_test=x
+
+                    # img = image.load_img(image_path+'/'+user_name+'/'+img_path, target_size=(224, 224))
+                    y_test.append(img_path)
+                    x = image.img_to_array(img)
+                    x = np.expand_dims(x, axis=0)
+                    if len(x_test) > 0:
+                        x_test = np.concatenate((x_test,x))
+                    else:
+                        x_test=x
         
         # 轉成 VGG 的 input 格式
         x_test = preprocess_input(x_test)
@@ -112,7 +117,7 @@ def main():
                 user_image_class_count[class_dict[top1]] += 3 
                 user_image_class_count[class_dict[top2]] += 2
                 user_image_class_count[class_dict[top3]] += 1
-        print('this user images class distribution: ',user_image_class_count)
+        # print('this user images class distribution: ',user_image_class_count)
 
         f = open(output_path+'output.txt','a')
         f.write(user_name+' :\n')
