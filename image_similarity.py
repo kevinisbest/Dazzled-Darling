@@ -116,13 +116,21 @@ def main():
         for i in range(len(y_test)):
             distance = consine_distance(features_compress_seed,features_compress_test[i,:])
             sorted_distance = np.sort(distance)
-            if sorted_distance[0]>0.88 :
+            if sorted_distance[0] > 0.88 :
                 user_image_class_count['other'] += 1
             else:
                 top1,top2,top3 = np.argsort(distance)[0:3]
-                user_image_class_count[class_dict[top1]] += 3 
-                user_image_class_count[class_dict[top2]] += 2
-                user_image_class_count[class_dict[top3]] += 1
+                if sorted_distance[top3] > 0.89:
+                    if sorted_distance[top2] > 0.89:
+                        user_image_class_count[class_dict[top1]] += 2
+                    else:
+                        user_image_class_count[class_dict[top1]] += 2
+                        user_image_class_count[class_dict[top2]] += 1
+                else:
+                    user_image_class_count[class_dict[top1]] += 2
+                    user_image_class_count[class_dict[top2]] += 1
+                    user_image_class_count[class_dict[top3]] += 1
+
         # print('this user images class distribution: ',user_image_class_count)
 
         f = open(output_path+'output.txt','a')
