@@ -10,17 +10,19 @@ from PIL import ImageFile
 ImageFile.LOAD_TRUNCATED_IMAGES = True
 from tqdm import tqdm
 
-# image_path = '/Users/kevin_mbp/Desktop/image/user_images/'
-# output_path = '/Users/kevin_mbp/Desktop/test_dir/output/'
-# seed_path = '/Users/kevin_mbp/Desktop/test_dir/seed_pic/'
+image_path = '/Users/kevin_mbp/Desktop/image/user_images/'
+output_path = '/Users/kevin_mbp/Desktop/test_dir/output/'
+seed_path = '/Users/kevin_mbp/Desktop/test_dir/seed_pic/'
 
-image_path = '/media/Data/IR2018/IG_pic/'
-seed_path = '/home/mirlab/IR2018/seed_pic/'
-output_path = '/home/mirlab/IR2018/image_user_output/'
+# image_path = '/media/Data/IR2018/IG_pic/'
+# seed_path = '/home/mirlab/IR2018/seed_pic/'
+# output_path = '/home/mirlab/IR2018/image_user_output/'
 
 # image_path = './image/'
 # output_path = './output'
 # seed_path = './seed_pic/'
+
+seed_pic_dict = {}
 
 # 計算相似矩陣
 def cosine_similarity(ratings):
@@ -30,31 +32,34 @@ def cosine_similarity(ratings):
     norms = np.array([np.sqrt(np.diagonal(sim))])
     return (sim / norms / norms.T)
 def consine_distance(seed_vector,test_vector):
-    dis = np.zeros(80)
-    for i in range(8):
-        index_max = (i+1)*10-1
-        for j in range(index_max-9,index_max+1,1):
-            # print(j)
-            tmp = cosine(seed_vector[j,:],test_vector)
-            dis[j] = tmp
-    dis = dis.reshape(8,10)
+    dis = np.zeros(sum(len(v)for v in seed_pic_dict.values()))
+    index = 0
+    for key, value in sorted(seed_pic_dict.items()):
+        for i in range(len(value)):
+            tmp = cosine(seed_vector[index+i,:], test_vector)
+            dis[index+i] = tmp
+        index += len(value)
+    dis = dis.reshape(8,-1)
     distance = np.mean(dis,axis=1)
-    # for i in range(a):
-    #     for j in range(a):
-    #         distance[i,j] = cosine(u[i,:],v[j,:])
     return distance
 def main():
-    # 讀取 seed pics
 
-    seed_pic=[]
-    class_dict={}
+    # 讀取 seed pics
+    seed_pic = []
+    class_dict = {}
     i=0
     for class_name in sorted(os.listdir(seed_path)):
         print('now is :',class_name)
-        class_dict[i]=class_name
-        i+=1
+        class_dict[i] = class_name
+
         for img_path in sorted(os.listdir(seed_path+class_name)):
             if img_path.endswith('.jpg'):
+                try:
+                    seed_pic_dict[i]
+                except :
+                    seed_pic_dict[i] = [str(img_path)]
+                else:
+                    seed_pic_dict[i].append(str(img_path))
                 img = image.load_img(seed_path+class_name+'/'+img_path, target_size=(224, 224))
                 x = image.img_to_array(img)
                 x = np.expand_dims(x, axis=0)
@@ -62,6 +67,7 @@ def main():
                     seed_pic = np.concatenate((seed_pic,x))
                 else:
                     seed_pic = x
+        i+=1
     seed_pic = preprocess_input(seed_pic)
 
     # include_top=False，表示會載入 VGG19 的模型，不包括加在最後3層的卷積層，通常是取得 Features (1,7,7,512)
