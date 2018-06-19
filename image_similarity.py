@@ -10,13 +10,13 @@ from PIL import ImageFile
 ImageFile.LOAD_TRUNCATED_IMAGES = True
 from tqdm import tqdm
 
-image_path = '/Users/kevin_mbp/Desktop/image/user_images/'
-output_path = '/Users/kevin_mbp/Desktop/test_dir/output/'
-seed_path = '/Users/kevin_mbp/Desktop/test_dir/seed_pic/'
+# image_path = '/Users/kevin_mbp/Desktop/image/user_images/'
+# output_path = '/Users/kevin_mbp/Desktop/test_dir/output/'
+# seed_path = '/Users/kevin_mbp/Desktop/test_dir/seed_pic/'
 
-# image_path = '/media/Data/IR2018/IG_pic/'
-# seed_path = '/home/mirlab/IR2018/seed_pic/'
-# output_path = '/home/mirlab/IR2018/image_user_output/'
+image_path = '/media/Data/IR2018/IG_pic/'
+seed_path = '/home/mirlab/IR2018/seed_pic/'
+output_path = '/home/mirlab/IR2018/image_user_output/'
 
 # image_path = './image/'
 # output_path = './output'
@@ -115,25 +115,26 @@ def main():
         # 計算 test image 與 seed pic 的距離
         for i in range(len(y_test)):
             distance = consine_distance(features_compress_seed,features_compress_test[i,:])
-            sorted_distance = np.sort(distance)
-            if sorted_distance[0] > 0.88 :
+            # sorted_distance = np.sort(distance)
+            top1,top2,top3 = np.argsort(distance)[0:3]
+
+            if distance[top1] > 0.88:
                 user_image_class_count['other'] += 1
             else:
-                top1,top2,top3 = np.argsort(distance)[0:3]
-                if sorted_distance[top3] > 0.89:
-                    if sorted_distance[top2] > 0.89:
-                        user_image_class_count[class_dict[top1]] += 2
-                    else:
-                        user_image_class_count[class_dict[top1]] += 2
-                        user_image_class_count[class_dict[top2]] += 1
-                else:
-                    user_image_class_count[class_dict[top1]] += 2
+                if distance[top3] < 0.89:
+                    user_image_class_count[class_dict[top1]] += 1
                     user_image_class_count[class_dict[top2]] += 1
                     user_image_class_count[class_dict[top3]] += 1
+                else:
+                    if distance[top2] < 0.90:
+                        user_image_class_count[class_dict[top1]] += 2
+                        user_image_class_count[class_dict[top2]] += 1
+                    else:
+                        user_image_class_count[class_dict[top1]] += 2
 
         # print('this user images class distribution: ',user_image_class_count)
 
-        f = open(output_path+'output.txt','a')
+        f = open(output_path+'output_new_policy2.txt','a')
         f.write(user_name+' :\n')
         f.write(str(user_image_class_count))
         f.write('\n')
