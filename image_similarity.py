@@ -122,23 +122,27 @@ def main():
                 user_image_class_count['other'] += 1
             else:
                 if distance[top3] < 0.89:
-                    user_image_class_count[class_dict[top1]] += 1
-                    user_image_class_count[class_dict[top2]] += 1
+                    user_image_class_count[class_dict[top1]] += 3
+                    user_image_class_count[class_dict[top2]] += 2
                     user_image_class_count[class_dict[top3]] += 1
                 else:
                     if distance[top2] < 0.90:
                         user_image_class_count[class_dict[top1]] += 2
                         user_image_class_count[class_dict[top2]] += 1
+                        user_image_class_count['other'] += 1
                     else:
-                        user_image_class_count[class_dict[top1]] += 2
+                        user_image_class_count[class_dict[top1]] += 3
+                        user_image_class_count['other'] += 1
 
         # print('this user images class distribution: ',user_image_class_count)
-
-        f = open(output_path+'output_new_policy2.txt','a')
+        f = open(output_path+'output_new_policy3.txt','a')
         f.write(user_name+' :\n')
         f.write(str(user_image_class_count))
         f.write('\n')
         f.close()
+
+        # user vector
+
 
 
 if __name__ == "__main__":
