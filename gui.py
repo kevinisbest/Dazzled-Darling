@@ -39,12 +39,11 @@ def show():
     picB = picB.resize( (srcw, srch), Image.BILINEAR )
     picB = ImageTk.PhotoImage(picB)
 
-    if panelA is None or panelB is None:
+    if panelA is None and panelB is None:
         panelA = Label(image = picA,text = 'out')
         panelA.image = picA
-        panelA.pack(side = "left", )
+        panelA.pack(side = "left" )
         
-        # while the second panel will store the edge map
         panelB = Label(image = picB,text = 'out')
         panelB.image = picB
         panelB.pack(side = "right")
@@ -54,8 +53,10 @@ def show():
         # update the pannels
         panelA.configure(image = picA)
         panelA.image = picA
+        panelA.pack(side = "left" )
         panelB.configure(image = picB)
         panelB.image = picB
+        panelB.pack(side = "right")
 
 button=Button(win, text="OK",command=show)
 label.pack()
