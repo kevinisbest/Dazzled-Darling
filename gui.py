@@ -13,20 +13,38 @@ win.title("IR ttk GUI")
 label=tk.Label(win, text="Hello World!")
 label.pack()
 count=0
+srcw = 450
+srch = 450
+
+image_list = []
+images = glob.glob('/Users/kevin_mbp/Desktop/IG/image/*.jpg')
 
 var = tk.StringVar()
 
 class Test():
     def __init__(self):
+
+        self.picA = random.sample(images, 1)[0]
+        
+        image_list.append(self.picA)
+        self.picA = Image.open(self.picA)
+        self.picA = self.picA.resize( (srcw, srch), Image.BILINEAR )
+
         self.canvas = tk.Canvas(win, width = 800, height = 480)
-        self.img = ImageTk.PhotoImage(file="/Users/kevin_mbp/Desktop/IG/image/34147899_192008804787509_3793347675974270976_n.jpg")
+        self.img = ImageTk.PhotoImage(self.picA)
         self.imgArea = self.canvas.create_image(0, 0, anchor = 'nw', image = self.img)
         self.canvas.pack()
         self.but1 = tk.Button(win, text="press me", command=lambda: self.changeImg())
         self.but1.place(x=10, y=500)
     def changeImg(self):
-        self.img = ImageTk.PhotoImage(file="/Users/kevin_mbp/Desktop/IG/image/34149631_2545647892327483_2513829484877053952_n.jpg")
+        self.picB = random.sample(images, 1)[0]
+        image_list.append(self.picB)
+        self.picB = Image.open(self.picB)
+        self.picB = self.picB.resize( (srcw, srch), Image.BILINEAR )
+        self.img = ImageTk.PhotoImage(self.picB)
         self.canvas.itemconfig(self.imgArea, image = self.img)
+        self.but2 = tk.Button(win, text="press me", command=lambda: self.changeImg())
+        self.but2.place(x=10, y=500)
 
 
 def show():
