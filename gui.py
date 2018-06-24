@@ -74,8 +74,8 @@ class Test():
             self.picB.thumbnail((int(s[0]*ratio),int(s[1]* ratio)),Image.ANTIALIAS)
             self.img = ImageTk.PhotoImage(self.picB)
             self.canvas.itemconfig(self.imgArea, image = self.img)
-            self.but2 = Button(win, text="Next !", command=lambda: self.changeImg())
-            self.but2.place(x=10, y=500)
+            # self.but2 = Button(win, text="Next !", command=lambda: self.changeImg())
+            # self.but2.place(x=10, y=500)
     def text(self):
         print('del')
 
