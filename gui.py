@@ -1,3 +1,4 @@
+#! coding=utf-8
 from tkinter import *
 from tkinter.ttk import *
 from PIL import ImageTk
@@ -6,6 +7,8 @@ import os
 from os import listdir
 import random
 import glob
+import returnUserList
+
 win = Tk()
 win.geometry('800x600')
 # win.resizable(0,0)
@@ -16,8 +19,11 @@ count = -1
 srcw = 450
 srch = 450
 
+Dir_path = '/Users/chengho/Dazzled-Darling'
+
 image_list = []
-images = glob.glob('/Users/kevin_mbp/Desktop/IG/image/*.jpg')
+# images = glob.glob('/Users/chengho/Dazzled-Darling/image/*.jpg')
+images = glob.glob( Dir_path + '/image/*.jpg')
 
 var = StringVar()
 
@@ -25,7 +31,7 @@ class Test():
     def __init__(self):
 
         global label
-        welcome_pic_path='/Users/kevin_mbp/Desktop/IG/uriko.jpg'
+        welcome_pic_path= Dir_path + '/uriko.jpg'
 
         self.picA = Image.open(welcome_pic_path)
         s = self.picA.size
@@ -57,9 +63,11 @@ class Test():
     def changeImg(self):
         global count
         count+=1
+        # self.but1.destroy()
         if count ==7:
             self.canvas.destroy()
             self.but1.destroy()
+            # self.but1.place(x=100, y=500)
             r1.destroy()
             r2.destroy()
             self.text()
@@ -74,25 +82,37 @@ class Test():
             self.picB.thumbnail((int(s[0]*ratio),int(s[1]* ratio)),Image.ANTIALIAS)
             self.img = ImageTk.PhotoImage(self.picB)
             self.canvas.itemconfig(self.imgArea, image = self.img)
+            # self.but2 = Button(win, text="A !", command=lambda: self.changeImg())
             # self.but2 = Button(win, text="Next !", command=lambda: self.changeImg())
             # self.but2.place(x=10, y=500)
     def text(self):
         print('del')
-
-        
+        global xls_text, userLabel
+        userLabel = []
         label = Label(win, text="輸入關鍵字：")
         label.pack(side='top')
-        xls_text = StringVar()
-        xls = Entry(win, textvariable = xls_text)
-        xls_text.set(" ")
+        xls_text = StringVar(value='query here')
+        xls = Entry(win, textvariable = xls_text, width='36')
+        # xls_text.set(" ")
         xls.pack()
-        self.but2 = Button(win, text="ok !", command=self.do_somthing())
-        self.but2.place(x=10, y=500)
-        self.but2.pack()
+        self.but3 = Button(win, text="ok !", command=lambda: self.do_queryWord())
+        self.but3.place(x=10, y=500)
+        self.but3.pack()
 
-
-    def do_somthing(self):
-        print('do_somthing')
+    def do_queryWord(self):
+        # print('do_somthing')
+        query = xls_text.get()
+        print(query)
+        ### reset status
+        for label in userLabel:
+        	label.destroy()
+        
+        ### print return list
+        returnList = returnUserList.main(query)
+        for i, user in enumerate(returnList):
+        	tmp = Label(win, text=str(i+1) + ': ' + user)
+        	tmp.pack()
+        	userLabel.append(tmp)
 
 
 
@@ -104,7 +124,7 @@ def show():
     srcw = 450
     srch = 450
     image_list = []
-    images = glob.glob('/Users/kevin_mbp/Desktop/IG/image/*.jpg')
+    images = glob.glob(Dir_path + '/image/*.jpg')
     label.config(text = 'count '+str(count))
     
     picA = random.sample(images, 1)[0]
