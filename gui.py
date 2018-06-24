@@ -1,50 +1,74 @@
-from tkinter import ttk
+from tkinter import *
+from tkinter.ttk import *
 from PIL import ImageTk
 from PIL import Image
-import tkinter as tk
 import os
 from os import listdir
 import random
 import glob
-win=tk.Tk()
-win.geometry('1000x600')
+win = Tk()
+win.geometry('800x600')
 # win.resizable(0,0)
 win.title("IR ttk GUI")
-label=tk.Label(win, text="Hello World!")
-label.pack()
-count=0
+win.configure(background='gray')
+
+count = 0
 srcw = 450
 srch = 450
 
 image_list = []
 images = glob.glob('/Users/kevin_mbp/Desktop/IG/image/*.jpg')
 
-var = tk.StringVar()
+var = StringVar()
 
 class Test():
     def __init__(self):
+
+        global label
 
         self.picA = random.sample(images, 1)[0]
         
         image_list.append(self.picA)
         self.picA = Image.open(self.picA)
-        self.picA = self.picA.resize( (srcw, srch), Image.BILINEAR )
-
-        self.canvas = tk.Canvas(win, width = 800, height = 480)
+        s = self.picA.size
+        print(s)
+        ratio = 500/max(s[0],s[1])
+        print(ratio)
+        self.picA.thumbnail((int(s[0]*ratio),int(s[1]* ratio)),Image.ANTIALIAS)
+        self.canvas = Canvas(win, width = 500, height = 500)
         self.img = ImageTk.PhotoImage(self.picA)
         self.imgArea = self.canvas.create_image(0, 0, anchor = 'nw', image = self.img)
         self.canvas.pack()
-        self.but1 = tk.Button(win, text="press me", command=lambda: self.changeImg())
+        self.but1 = Button(win, text="press me", command=lambda: self.changeImg())
         self.but1.place(x=10, y=500)
+
+        label = Label(win, text="please select YES or NO!")
+        label.pack()
+
+        r1 = Radiobutton(win, text='YES',
+                    variable=var, value='Yes',
+                    command=print_selection)
+        r1.pack()
+        r2 = Radiobutton(win, text='NO',
+                            variable=var, value='NO',
+                            command=print_selection)
+        r2.pack()
+
     def changeImg(self):
         self.picB = random.sample(images, 1)[0]
         image_list.append(self.picB)
         self.picB = Image.open(self.picB)
-        self.picB = self.picB.resize( (srcw, srch), Image.BILINEAR )
+        # self.picB = self.picB.resize( (srcw, srch), Image.BILINEAR )
+        s = self.picB.size
+        print(s)
+        ratio = 500/max(s[0],s[1])
+        print(ratio)
+        self.picB.thumbnail((int(s[0]*ratio),int(s[1]* ratio)),Image.ANTIALIAS)
         self.img = ImageTk.PhotoImage(self.picB)
         self.canvas.itemconfig(self.imgArea, image = self.img)
-        self.but2 = tk.Button(win, text="press me", command=lambda: self.changeImg())
+        self.but2 = Button(win, text="press me", command=lambda: self.changeImg())
         self.but2.place(x=10, y=500)
+
 
 
 def show():
@@ -74,11 +98,11 @@ def show():
     picB = ImageTk.PhotoImage(picB)
 
     if panelA is None and panelB is None:
-        panelA = tk.Label(image = picA,text = 'out')
+        panelA = Label(image = picA,text = 'out')
         panelA.image = picA
         panelA.pack(side = "left" )
         
-        panelB = tk.Label(image = picB,text = 'out')
+        panelB = Label(image = picB,text = 'out')
         panelB.image = picB
         panelB.pack(side = "right")
         
@@ -101,14 +125,7 @@ def update_image():
 def print_selection():
     label.config(text='you have selected ' + var.get())
 
-r1 = tk.Radiobutton(win, text='Left',
-                    variable=var, value='A',
-                    command=print_selection)
-r1.pack()
-r2 = tk.Radiobutton(win, text='Right',
-                    variable=var, value='B',
-                    command=print_selection)
-r2.pack()
+
 
 # button=tk.Button(win, text="show",command=show)
 
