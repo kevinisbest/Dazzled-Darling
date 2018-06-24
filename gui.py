@@ -9,7 +9,7 @@ import glob
 win = Tk()
 win.geometry('800x600')
 # win.resizable(0,0)
-win.title("IR ttk GUI")
+win.title("迷惘美")
 win.configure(background='gray')
 
 count = 0
@@ -25,11 +25,9 @@ class Test():
     def __init__(self):
 
         global label
+        welcome_pic_path='/Users/kevin_mbp/Desktop/IG/uriko.jpg'
 
-        self.picA = random.sample(images, 1)[0]
-        
-        image_list.append(self.picA)
-        self.picA = Image.open(self.picA)
+        self.picA = Image.open(welcome_pic_path)
         s = self.picA.size
         print(s)
         ratio = 500/max(s[0],s[1])
@@ -39,17 +37,17 @@ class Test():
         self.img = ImageTk.PhotoImage(self.picA)
         self.imgArea = self.canvas.create_image(0, 0, anchor = 'nw', image = self.img)
         self.canvas.pack()
-        self.but1 = Button(win, text="press me", command=lambda: self.changeImg())
+        self.but1 = Button(win, text=" Next !", command=lambda: self.changeImg())
         self.but1.place(x=10, y=500)
 
-        label = Label(win, text="please select YES or NO!")
+        label = Label(win, text="Welcom to 迷惘美, please select Like or Dislike")
         label.pack()
 
-        r1 = Radiobutton(win, text='YES',
+        r1 = Radiobutton(win, text='Like',
                     variable=var, value='Yes',
                     command=print_selection)
         r1.pack()
-        r2 = Radiobutton(win, text='NO',
+        r2 = Radiobutton(win, text='Dislike',
                             variable=var, value='NO',
                             command=print_selection)
         r2.pack()
