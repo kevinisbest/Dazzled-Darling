@@ -106,10 +106,9 @@ class Test():
 
 
             self.canvas.destroy()
-            self.but2.destroy()
             self.r1.destroy()
             self.r2.destroy()
-            # self.but1.place(x=100, y=500)
+            self.but1.destroy()
             
             ### enter query section
             self.text()
@@ -119,7 +118,6 @@ class Test():
             else:
                 self.r1.destroy()
                 self.r2.destroy()
-            self.but1.destroy()
 
             index = random.randint(0,len(seed_dict[count])-1)
             self.picB = seed_dict[count][index]
@@ -148,8 +146,9 @@ class Test():
                                 variable=var, value='Dislike',
                                 command=print_selection)
             self.r2.pack()
-            self.but2 = Button(win, text="Next !", command=lambda: self.changeImg())
-            self.but2.place(x=10, y=500)
+            self.but1.config(text="Next !")
+            # self.but2 = Button(win, text="Next !", command=lambda: self.changeImg())
+            # self.but2.place(x=10, y=500)
 
     def text(self):
         global xls_text, userLabel
