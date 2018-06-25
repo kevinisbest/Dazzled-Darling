@@ -1,6 +1,6 @@
 import numpy as np
 
-Dir_path = 'final'
+Dir_path = '../data'
 # Dir_path = 'final'
 
 def readData():
