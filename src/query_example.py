@@ -6,7 +6,7 @@ import sys
 Prepare: 將query.py放在./下
 Work:
 import query
-input_dataset = Database的路徑 (e.g. ./output_new_policy3.txt) [Type: txt]
+input_dataset = Database的路徑 (e.g. ./output_new_policy3.txt) [Type: str]
 prefer_score = user-prefer的分數 (老蕭前端) [Type: dic]
 query_list = Text model產出的結果 (振合&阿岳) [Type: list]
 
