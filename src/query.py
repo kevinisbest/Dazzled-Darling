@@ -4,6 +4,9 @@ import numpy as np
 from scipy import spatial
 import ast
 
+class_list = ['animal', 'exercise', 'food', 'hipster',
+              'outfit', 'sexy', 'travel', 'work', 'other']
+
 
 def getUsrPrefer(prefer_score):
     score = []
@@ -13,7 +16,7 @@ def getUsrPrefer(prefer_score):
     return scoreNorm
 
 
-def getScore(user):
+def getScore(user, userList, Database):
     index = userList.index(user)
     score = []
     for c in class_list:
@@ -22,10 +25,10 @@ def getScore(user):
     return scoreNorm
 
 
-def getNewQuery(prefer_score, query_list):
+def getNewQuery(prefer_score, query_list, userList, Database):
     query_scores = []
     for query in query_list:
-        query_scores.append(getScore(query))
+        query_scores.append(getScore(query, userList, Database))
 
     cos_score = []
     for query_score in query_scores:
@@ -58,17 +61,14 @@ def buildDataBase(input_file):
     return userList, DataBase
 
 
-def comparePreAndQry(prefer_score, query_list):
+def comparePreAndQry(prefer_score, query_list, userList, Database):
     prefer_score = getUsrPrefer(prefer_score)
-    query_list = getNewQuery(prefer_score, query_list)
+    query_list = getNewQuery(prefer_score, query_list, userList, Database)
 
     return query_list
 
 
 if __name__ == '__main__':
-
-    class_list = ['animal', 'exercise', 'food', 'hipster',
-                  'outfit', 'sexy', 'travel', 'work', 'other']
 
     # Link pre-trained database
     userList, Database = buildDataBase(sys.argv[1])  # output_new_policy3.txt
@@ -82,5 +82,5 @@ if __name__ == '__main__':
                   'jasschatz', 'kaiyibai', 'yin.i_']
 
     # print('query list = ', query_list)
-    query_list = comparePreAndQry(prefer_score, query_list)
+    query_list = comparePreAndQry(prefer_score, query_list, userList, Database)
     # print('query list = ', query_list)
