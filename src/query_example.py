@@ -8,7 +8,7 @@ Prepare: 將query.py放在./下
 Work:
 import query
 
-input_dataset = Database的路徑 (e.g. ./output_new_policy3.txt) [Type: str]
+input_dataset = Database的路徑 (e.g. ../data/output_new_policy3.txt) [Type: str]
 prefer_score = user-prefer的分數 (老蕭前端) [Type: dic]
 query_list = Text model產出的結果 (振合&阿岳) [Type: list]
 
@@ -18,7 +18,7 @@ query_list = Text model產出的結果 (振合&阿岳) [Type: list]
     return new_query_list[Type: list]
 ==================================
 如何使用query_example.py
-python3 query_example.py ./output_new_policy3.txt
+python3 query_example.py [output_new_policyX.txt path]
 ==================================
 '''
 
