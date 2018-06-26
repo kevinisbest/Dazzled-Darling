@@ -3,6 +3,8 @@ import sys
 
 '''
 如何使用query.py
+Prepare: 將query.py放在./下
+Work:
 import query
 import sys
 argv[1]放我們的Database (e.g. output_new_policy3.txt) [Type: txt]
