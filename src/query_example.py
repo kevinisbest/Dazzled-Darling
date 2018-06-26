@@ -2,18 +2,24 @@ import query
 import sys
 
 '''
+==================================
 如何使用query.py
 Prepare: 將query.py放在./下
 Work:
 import query
+
 input_dataset = Database的路徑 (e.g. ./output_new_policy3.txt) [Type: str]
 prefer_score = user-prefer的分數 (老蕭前端) [Type: dic]
 query_list = Text model產出的結果 (振合&阿岳) [Type: list]
 
-1. call query.buildDataBase(input_dataset) 來連結Database
+1. [call] query.buildDataBase(input_dataset) 來連結Database
     return userList[Type: list], Database[Type: list]
-2. call query.comparePreAndQry(prefer_score, query_list, userList, Database) 來比對user_prefer與text model的結果，並由關聯度大到小排序
-    return query_list[Type: list]
+2. [call] query.comparePreAndQry(prefer_score, query_list, userList, Database) 來比對user_prefer與text model的結果，並由關聯度大到小排序
+    return new_query_list[Type: list]
+==================================
+如何使用query_example.py
+python3 query_example.py ./output_new_policy3.txt
+==================================
 '''
 
 
@@ -29,8 +35,8 @@ query_list = ['imstephaniekuo', 'imtwiggy',
               'jasschatz', 'kaiyibai', 'yin.i_']
 
 # print('query list = ', query_list)
-query_list = query.comparePreAndQry(
+new_query_list = query.comparePreAndQry(
     prefer_score, query_list, userList, Database)
 
 
-print('query_list = ', query_list)
+print('new_query_list = ', new_query_list)
