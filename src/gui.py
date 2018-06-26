@@ -124,7 +124,6 @@ class Test():
             self.picB = Image.open(self.picB)
             self.picA = self.picB.copy()
             self.picA = self.picA.resize((224,224),Image.NEAREST)
-            print('self.picA.size:',self.picA.size)
             s = self.picB.size
             ratio = srcw/max(s[0],s[1])
             print(count)
@@ -148,7 +147,6 @@ class Test():
     def sim(self):
         self.y_test = []
         self.y_test.append(self.picA)
-        print('y_test len:',len(self.y_test))
         x = image.img_to_array(self.picA)
         x = np.expand_dims(x, axis=0)
         x_test = preprocess_input(x)
