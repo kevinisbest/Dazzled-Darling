@@ -74,7 +74,7 @@ class Test():
         self.imgArea = self.canvas.create_image(0, 0, anchor = 'nw', image = self.img)
         self.canvas.pack()
         self.but1 = Button(win, text=" Start !", command=lambda: self.changeImg())
-        self.but1.place(x=650, y=500)
+        self.but1.place(x=660, y=506)
 
         label = Label(win, text="Welcom to 迷惘美, please press Start ! ")
         label.pack()
@@ -182,7 +182,7 @@ class Test():
         # xls_text.set(" ")
         xls.pack()
         self.but3 = Button(win, text="ok !", command=lambda: self.do_queryWord())
-        self.but3.place(x=650, y=500)
+        self.but3.place(x=660, y=506)
         self.but3.pack()
 
         print('this user images class distribution: ',user_image_class_count)
