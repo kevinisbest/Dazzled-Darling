@@ -13,6 +13,7 @@ import random
 import glob
 import numpy as np
 import returnUserList
+import query
 
 win = Tk()
 win.geometry('800x600')
@@ -31,6 +32,7 @@ srch = 500
 ### PATHs
 seed_path = '../images/seed_pic/'
 Seed_pic_feature = '../data/seed_pic.npy'
+Database_path = '../data/output_new_policy3.txt'
 
 ### global variables
 image_list = []
@@ -72,12 +74,10 @@ class Test():
         self.imgArea = self.canvas.create_image(0, 0, anchor = 'nw', image = self.img)
         self.canvas.pack()
         self.but1 = Button(win, text=" Start !", command=lambda: self.changeImg())
-        self.but1.place(x=10, y=500)
-
+        self.but1.place(x=650, y=500)
 
         label = Label(win, text="Welcom to 迷惘美, please press Start ! ")
         label.pack()
-
 
     def changeImg(self):
         global count
@@ -172,7 +172,6 @@ class Test():
                     user_image_class_count[class_dict[top1]] += 3
                     user_image_class_count['other'] += 1
 
-
     def text(self):
         global xls_text, userLabel
         userLabel = []
@@ -183,28 +182,30 @@ class Test():
         # xls_text.set(" ")
         xls.pack()
         self.but3 = Button(win, text="ok !", command=lambda: self.do_queryWord())
-        self.but3.place(x=10, y=500)
+        self.but3.place(x=650, y=500)
         self.but3.pack()
 
         print('this user images class distribution: ',user_image_class_count)
 
-
-
     def do_queryWord(self):
-        # print('do_somthing')
         query = xls_text.get()
-        print(query)
         ### reset status
         for label in userLabel:
         	label.destroy()
         
         ### print return list
         returnList = returnUserList.main(query)
-        for i, user in enumerate(returnList):
-        	tmp = Label(win, text=str(i+1) + ': ' + user)
-        	tmp.pack()
-        	userLabel.append(tmp)
+        self.sort_query(returnList)
 
+    def sort_query(self,returnList):
+        userList, Database = query.buildDataBase(Database_path)
+        new_query_list = query.comparePreAndQry(
+            user_image_class_count, returnList, userList, Database)
+        print(new_query_list)
+        for i, user in enumerate(new_query_list):
+        	tmp = Label(win, text=str(i+1) + ': ' + user)
+        	tmp.pack(fill=X)
+        	userLabel.append(tmp)
 
 def print_selection():
     label.config(text='you have selected ' + var.get())
