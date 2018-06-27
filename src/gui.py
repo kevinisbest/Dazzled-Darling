@@ -17,7 +17,7 @@ import query
 
 win = Tk()
 win.geometry('800x600')
-# win.resizable(0,0)
+win.resizable(0,0)
 win.title("迷惘美")
 win.configure(background='gray')
 var = StringVar()
@@ -88,7 +88,7 @@ class Test():
         
         count+=1
         ### after 8 rounds
-        if count == 7:
+        if count == 8:
             ### remove the last image if last image was selected 'Dislike' 
             if var.get() == 'Like':
                 self.sim()
@@ -130,7 +130,7 @@ class Test():
             self.picB.thumbnail((int(s[0]*ratio),int(s[1]* ratio)),Image.ANTIALIAS)
             self.img = ImageTk.PhotoImage(self.picB)
             self.canvas.itemconfig(self.imgArea, image = self.img)
-            label.config( text=" Please select Like or Dislike ! ")
+            label.config( text=" Please select Like or Dislike ! "+str(count+1)+'/8')
 
             self.r1 = Radiobutton(win, text='Like',
                     variable=var, value='Like',
@@ -208,7 +208,8 @@ class Test():
         	userLabel.append(tmp)
 
 def print_selection():
-    label.config(text='you have selected ' + var.get())
+    global count
+    label.config(text='you have selected ' + var.get()+'! '+str(count+1)+'/8')
 
 def consine_distance(seed_vector,test_vector):
     dis = np.zeros(sum(len(v)for v in seed_dict.values()))
