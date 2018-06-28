@@ -12,7 +12,8 @@ def getUsrPrefer(prefer_score):
     score = []
     for c in class_list:
         score.append(prefer_score[c])
-    scoreNorm = [float(i) / sum(score) for i in score]
+    else:
+        scoreNorm = [float(i) / sum(score) for i in score]
     return scoreNorm
 
 
@@ -61,10 +62,22 @@ def buildDataBase(input_file):
     return userList, DataBase
 
 
-def comparePreAndQry(prefer_score, query_list, userList, Database):
-    prefer_score = getUsrPrefer(prefer_score)
-    query_list = getNewQuery(prefer_score, query_list, userList, Database)
+def check(prefer_score):
+    flag = True
+    score = []
+    for c in class_list:
+        score.append(prefer_score[c])
+    if sum(score) == 0:
+        flag = False
+    return flag
 
+
+def comparePreAndQry(prefer_score, query_list, userList, Database):
+    if check(prefer_score):
+        prefer_score = getUsrPrefer(prefer_score)
+        query_list = getNewQuery(prefer_score, query_list, userList, Database)
+    else:
+        return query_list
     return query_list
 
 
@@ -76,6 +89,8 @@ if __name__ == '__main__':
     # from 選照片
     prefer_score = {'animal': 2, 'exercise': 141, 'food': 5, 'hipster': 65,
                     'outfit': 40, 'sexy': 116, 'travel': 1, 'work': 44, 'other': 17}
+    # prefer_score = {'animal': 0, 'exercise': 0, 'food': 0, 'hipster': 0,
+    #                 'outfit': 0, 'sexy': 0, 'travel': 0, 'work': 0, 'other': 0}
 
     # Query from 振合&阿岳
     query_list = ['imstephaniekuo', 'imtwiggy',
