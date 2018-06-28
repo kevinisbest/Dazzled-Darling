@@ -18,7 +18,7 @@ import query
 import webbrowser
 
 win = Tk()
-win.geometry('800x800')
+win.geometry('800x700')
 # win.resizable(0,0)
 win.title("迷惘美")
 win.configure(background='gray')
@@ -213,9 +213,9 @@ class Test():
         
         frame = Frame(win)
         frame.pack()
-        sortBut1 = Button(frame, text='Previous picture', command=lambda: self.show(-1))
+        sortBut1 = Button(frame, text='Previous picture :', command=lambda: self.show(-1))
         sortBut1.pack(side='left')
-        sortBut2 = Button(frame, text='Next picture', command=lambda: self.show(+1))
+        sortBut2 = Button(frame, text='Next picture :', command=lambda: self.show(+1))
         sortBut2.pack(side='left')
         sortBut3 = Button(frame, text='Quit', command=win.quit)
         sortBut3.pack(side='left')
@@ -243,13 +243,14 @@ class Test():
             messagebox.showinfo('End', 'No more image.')
             return
         current += delta
+        # print(current)
         dir_name = os.path.join(User_pic_path,new_query_list[current])
         image = Image.open(os.path.join(dir_name,listdir(dir_name)[0]))
         s = image.size
         ratio = 250/max(s[0],s[1])
         image.thumbnail((int(s[0]*ratio),int(s[1]* ratio)),Image.ANTIALIAS)
         photo = ImageTk.PhotoImage(image)
-        label.config(text=new_query_list[current])
+        # label.config(text=new_query_list[current])
         # label['text'] = new_query_list[current]
         label['image'] = photo
         label.photo = photo
