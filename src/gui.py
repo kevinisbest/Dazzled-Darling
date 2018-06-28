@@ -15,12 +15,11 @@ import glob
 import numpy as np
 import returnUserList
 import query
-import tkHyperlinkManager
 import webbrowser
 
 win = Tk()
-win.geometry('800x600')
-win.resizable(0,0)
+win.geometry('800x800')
+# win.resizable(0,0)
 win.title("迷惘美")
 win.configure(background='gray')
 var = StringVar()
@@ -179,11 +178,12 @@ class Test():
                     user_image_class_count['other'] += 1
 
     def text(self):
-        global xls_text, userLabel, label
+        global xls_text, userLabel, label, sortBotton
         userLabel = []
+        sortBotton = []
         label.config(text=" 輸入關鍵字：")
         label.pack(side='top')
-        xls_text = StringVar(value='query here')
+        xls_text = StringVar(value='')
         xls = Entry(win, textvariable = xls_text, width='36')
         # xls_text.set(" ")
         xls.pack()
@@ -204,33 +204,49 @@ class Test():
         self.sort_query(returnList)
 
     def sort_query(self,returnList):
-        global new_query_list
+        global new_query_list, frame
+        for i, but in enumerate(sortBotton):
+            # print(type(but))
+            if i==0:
+                frame.destroy()
+            but.destroy()
+        
+        frame = Frame(win)
+        frame.pack()
+        sortBut1 = Button(frame, text='Previous picture', command=lambda: self.show(-1))
+        sortBut1.pack(side='left')
+        sortBut2 = Button(frame, text='Next picture', command=lambda: self.show(+1))
+        sortBut2.pack(side='left')
+        sortBut3 = Button(frame, text='Quit', command=win.quit)
+        sortBut3.pack(side='left')
+        sortBotton.append(sortBut1)
+        sortBotton.append(sortBut2)
+        sortBotton.append(sortBut3)
+
         userList, Database = query.buildDataBase(Database_path)
         new_query_list = query.comparePreAndQry(
             user_image_class_count, returnList, userList, Database)
-        for i, user in enumerate(new_query_list[0:5]):
+        for i in range(0, len(new_query_list)):
+            user = new_query_list[i]
             tmp = Label(win, text=str(i+1) + ': ' + user, cursor="hand2")
-            tmp.pack(fill=X)
             tmp.bind("<Button-1>", callback)
+            if i%2 ==0:
+                tmp.place(x=150, y=350+int(i/2)*30, width=150)
+            else:
+                tmp.place(x=500, y=350+int(i/2)*30, width=150)
             userLabel.append(tmp)
-
-        frame = Frame(win)
-        frame.pack()
-        Button(frame, text='Previous picture', command=lambda: self.show(-1)).pack(side='left')
-        Button(frame, text='Next picture', command=lambda: self.show(+1)).pack(side='left')
-        Button(frame, text='Quit', command=win.quit).pack(side='left')
         self.show(0)
 
     def show(self,delta):
         global new_query_list, current
-        if not (0 <= current + delta < len(image_list)):
+        if not (0 <= current + delta < len(new_query_list)):
             messagebox.showinfo('End', 'No more image.')
             return
         current += delta
         dir_name = os.path.join(User_pic_path,new_query_list[current])
         image = Image.open(os.path.join(dir_name,listdir(dir_name)[0]))
         s = image.size
-        ratio = 300/max(s[0],s[1])
+        ratio = 250/max(s[0],s[1])
         image.thumbnail((int(s[0]*ratio),int(s[1]* ratio)),Image.ANTIALIAS)
         photo = ImageTk.PhotoImage(image)
         label.config(text=new_query_list[current])
