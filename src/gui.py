@@ -15,6 +15,8 @@ import glob
 import numpy as np
 import returnUserList
 import query
+import tkHyperlinkManager
+import webbrowser
 
 win = Tk()
 win.geometry('800x600')
@@ -195,7 +197,7 @@ class Test():
         query = xls_text.get()
         ### reset status
         for label in userLabel:
-        	label.destroy()
+            label.destroy()
         
         ### print return list
         returnList = returnUserList.main(query)
@@ -207,9 +209,10 @@ class Test():
         new_query_list = query.comparePreAndQry(
             user_image_class_count, returnList, userList, Database)
         for i, user in enumerate(new_query_list[0:5]):
-        	tmp = Label(win, text=str(i+1) + ': ' + user)
-        	tmp.pack(fill=X)
-        	userLabel.append(tmp)
+            tmp = Label(win, text=str(i+1) + ': ' + user, cursor="hand2")
+            tmp.pack(fill=X)
+            tmp.bind("<Button-1>", callback)
+            userLabel.append(tmp)
 
         frame = Frame(win)
         frame.pack()
@@ -230,10 +233,13 @@ class Test():
         ratio = 300/max(s[0],s[1])
         image.thumbnail((int(s[0]*ratio),int(s[1]* ratio)),Image.ANTIALIAS)
         photo = ImageTk.PhotoImage(image)
-        label['text'] = new_query_list[current]
+        label.config(text=new_query_list[current])
+        # label['text'] = new_query_list[current]
         label['image'] = photo
         label.photo = photo
 
+def callback(event):
+    webbrowser.open_new('https://www.instagram.com/'+str(event.widget.cget("text")).split(' ')[-1])
 
 def print_selection():
     global count
