@@ -122,7 +122,6 @@ class Test():
                     pass
  
             index = random.randint(0,len(seed_dict[count])-1)
-            print(index)
             self.picB = seed_dict[count][index]
             
             image_list.append(self.picB)
@@ -207,7 +206,6 @@ class Test():
         userList, Database = query.buildDataBase(Database_path)
         new_query_list = query.comparePreAndQry(
             user_image_class_count, returnList, userList, Database)
-        print(new_query_list)
         for i, user in enumerate(new_query_list[0:5]):
         	tmp = Label(win, text=str(i+1) + ': ' + user)
         	tmp.pack(fill=X)
@@ -215,21 +213,22 @@ class Test():
 
         frame = Frame(win)
         frame.pack()
-        Button(frame, text='Previous picture', command=lambda: self.move(-1)).pack(side='left')
-        Button(frame, text='Next picture', command=lambda: self.move(+1)).pack(side='left')
+        Button(frame, text='Previous picture', command=lambda: self.show(-1)).pack(side='left')
+        Button(frame, text='Next picture', command=lambda: self.show(+1)).pack(side='left')
         Button(frame, text='Quit', command=win.quit).pack(side='left')
-        self.move(0)
+        self.show(0)
 
-    def move(self,delta):
+    def show(self,delta):
         global new_query_list, current
         if not (0 <= current + delta < len(image_list)):
             messagebox.showinfo('End', 'No more image.')
             return
         current += delta
         dir_name = os.path.join(User_pic_path,new_query_list[current])
-        print(dir_name)
         image = Image.open(os.path.join(dir_name,listdir(dir_name)[0]))
-        image = image.resize((224,224),Image.NEAREST)
+        s = image.size
+        ratio = 300/max(s[0],s[1])
+        image.thumbnail((int(s[0]*ratio),int(s[1]* ratio)),Image.ANTIALIAS)
         photo = ImageTk.PhotoImage(image)
         label['text'] = new_query_list[current]
         label['image'] = photo
