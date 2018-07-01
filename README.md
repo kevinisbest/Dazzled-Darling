@@ -30,7 +30,6 @@ python3 gui.py
 ```
 
 ## Demo
-* Note: Our system only support traditional chinese, but tkinter
 ![](https://github.com/kevinisbest/Dazzled-Darling/blob/master/images/Demo.gif)
 
 ## Authors
