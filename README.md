@@ -20,7 +20,7 @@ Final Project of [Web Retrieval and Mining spring 2018](https://www.csie.ntu.edu
 * Pillow==5.1.0
 
 ## Usage
-* Note: Our system only support traditional Chinese query. If you are in MacOS, tkinter not support the MacOS orginal traditional Chinese input, you only can type your query in another place and copy/paste. 
+* **Note**: Our system only support Traditional Chinese query. If you are in MacOS, tkinter not support the MacOS orginal Traditional Chinese input, you only can type your query in another place and copy/paste. 
 
 1. First, download our [WordCount1.npy](https://github.com/kevinisbest/Dazzled-Darling/releases/download/AllWordCount1.npy/allWordCount1.npy.gz) and extract it under **data/**.
 2. Run the code.
