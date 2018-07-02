@@ -1,14 +1,15 @@
 import numpy as np
+from gensim.models import word2vec
 
 Dir_path = '../data'
 # Dir_path = 'final'
 
 def readData():
 	### load all word count
-	allWordCount = np.load( Dir_path + '/' + 'allWordCount.npy')
+	allWordCount = np.load( Dir_path + '/' + 'allWordCount1.npy')
 
 	### load all word list
-	with open (Dir_path + '/' + 'allWordList.txt', encoding='utf-8') as f:
+	with open (Dir_path + '/' + 'allWordList1.txt', encoding='utf-8') as f:
 		allWordList = f.read().splitlines()
 	f.close()
 
@@ -35,17 +36,15 @@ def readData():
 	# print(len(allWordList))
 
 	### load chosen word
-	with open(Dir_path + '/' + 'chosenWord.txt', encoding='utf-8') as f:
-		chosenWord = f.read().splitlines()
-	f.close()
+	# with open(Dir_path + '/' + 'chosenWord.txt', encoding='utf-8') as f:
+	# 	chosenWord = f.read().splitlines()
 
 	### load topic word
-	topicList = []
-	with open(Dir_path + '/' + 'topicWord.txt', encoding='utf-8') as f:
-		lines = f.read().splitlines()
-		for line in lines:
-			topicList.append(line.split())
-	f.close()
+	# topicList = []
+	# with open(Dir_path + '/' + 'topicWord.txt', encoding='utf-8') as f:
+	# 	lines = f.read().splitlines()
+	# 	for line in lines:
+	# 		topicList.append(line.split())
 	
 	### build word dictionary
 	# wordDic = {}
@@ -65,9 +64,9 @@ def readData():
 	# 		allWordCount[i, j] += 1
 	# np.save('allWordCount.npy', allWordCount)
 
-	return allWordCount, allWordList, userID, userWord, chosenWord, topicList
+	return allWordCount, allWordList, userID, userWord
 
-def returnList(query):
+def returnList_org(query):
 
 	### check chosenWord
 	# find query id
@@ -75,26 +74,68 @@ def returnList(query):
 		returnList = 'Sorry, not found'
 	else:
 		queryID = allWordList.index(query)
-
 		targetList = allWordCount[:, queryID]
-		rankList = (-targetList).argsort()
+		
+		indexList = (-targetList).argsort()
 		returnList = []
 		for i in range(20):
-			returnList.append(userID[rankList[i]])
+			if(targetList [indexList[i]] > 0):
+				returnList.append(userID[indexList[i]])
+				# print(userID[indexList[i]],targetList [indexList[i]])
+			else:
+				break
 
 	return returnList
+def returnList(query):
+    ### check chosenWord
+    # find query id
+    model = word2vec.Word2Vec.load(Dir_path + '/' + '/200_10.model.bin')
+    if query not in model.wv.vocab:
+        returnList = 'Sorry, not found'
+    else:
+        wordList = [(query,2)]
+        wordList.extend(model.most_similar(query))
+        score = np.zeros(len(userID))
 
-def main(query):
-	global allWordCount, allWordList, userID, userWord, chosenWord, topicList
+        queryIDList = []
+
+        for word in wordList:
+            print (word)
+            wordID = allWordList.index(word[0])
+            queryIDList.append(wordID)
+
+        for i, wordID in enumerate(queryIDList):
+            weight = wordList[i][1]
+            # weight = 11 - i
+            # print (weight)
+            score = score + np.array(allWordCount[:, wordID]) * weight
+
+        # targetList = allWordCount[:, queryID]
+        # indexList = (-targetList).argsort()
+
+        indexList = (-score).argsort()
+        returnList = []
+        for i in range(20):
+            if score[indexList[i]] > 0:
+                returnList.append(userID[indexList[i]])
+                # print(userID[indexList[i]],score[indexList[i]])
+            else:
+                break
+
+    return returnList
+
+def main():
+	global allWordCount, allWordList, userID, userWord
 	print('reading datas...')
-	allWordCount, allWordList, userID, userWord, chosenWord, topicList = readData()
+	allWordCount, allWordList, userID, userWord = readData()
 
 	### assume query is a single word
 	# print('Please type your query')
 	# query = input()
-	ans = returnList(query)
-	print(ans)
-	return ans
+	# ans = returnList(query)
+	# ans = returnList_org(query)
+	# print(ans)
+	# return ans
 	# a = [1, 3, 5, 7]
 	# print(a.index(6))
 
