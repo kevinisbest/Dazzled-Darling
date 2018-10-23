@@ -1,6 +1,10 @@
 # Dazzled-Darling
 Final Project of [Web Retrieval and Mining spring 2018](https://www.csie.ntu.edu.tw/~pjcheng/course/wm2018/)
 
+[![Packagist](https://img.shields.io/badge/TensorFlow-1.10.1-orange.svg)]()
+[![Packagist](https://img.shields.io/badge/Keras-2.2.2-blue.svg)]()
+[![Packagist](https://img.shields.io/badge/Python-3.5.0-blue.svg)]()
+[![Packagist](https://img.shields.io/badge/MacOS-10.13.1-black.svg)]()
 ## 迷惘美 Dazzled-Darling
 * 一個專屬於你的網美檢索系統
 * 健全的資料庫 (1559位IG網美，每位100篇圖/文)
