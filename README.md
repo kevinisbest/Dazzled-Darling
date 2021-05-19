@@ -21,7 +21,7 @@ Final Project of [Web Retrieval and Mining spring 2018](https://www.csie.ntu.edu
 * gensim==3.4.0
 * tqdm==4.19.5
 * scipy==0.19.0
-* Pillow==5.1.0
+* Pillow==8.1.1
 
 ## Usage
 * **Note**: Our system only support Traditional Chinese query. If you are in MacOS, tkinter not support the MacOS orginal Traditional Chinese input, you only can type your query in another place and copy/paste. 
